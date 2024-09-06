@@ -1,0 +1,160 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Title {
+  Ms
+  Mr
+  Mrs
+  other
+}
+
+enum RoleTypes {
+  passenger
+  agent
+}
+
+enum FlightType {
+  domestic
+  international
+}
+
+enum BookingStatus {
+  reserved
+  completed
+}
+
+model roles {
+  id   String  @unique
+  type RoleTypes @unique
+  users users[]
+}
+
+model users {
+  id            String      @id @default(uuid()) @db.Uuid
+  auth0UserId   String      @unique @map("auth0_user_id")
+  roleId        String      @map("role_id")
+  firstName     String      @map("first_name")
+  lastName      String      @map("last_name")
+  title         Title
+  email         String      @unique
+  phone         String
+  address       String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  deletedAt     DateTime?
+  role          roles       @relation(fields: [roleId], references: [id])
+  bookings      bookings[]
+}
+
+model airlines {
+  id           String      @id @default(uuid()) @db.Uuid
+  name         String
+  phone        String
+  flights      flights[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  deletedAt    DateTime?
+}
+
+model airports {
+  id              String      @id @default(uuid()) @db.Uuid
+  name            String
+  code            String      @unique
+  city            String
+  departureFlights flightSchedules[] @relation("DepartureAirport")
+  arrivalFlights   flightSchedules[] @relation("ArrivalAirport")
+  airportTypes     airportTypes[]
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  deletedAt        DateTime?
+}
+
+model airportTypes {
+  id         String      @id @default(uuid()) @db.Uuid
+  airportId  String      @map("airport_id") @db.Uuid
+  type       FlightType
+  airport    airports    @relation(fields: [airportId], references: [id])
+}
+
+model flights {
+  id            String      @id @default(uuid()) @db.Uuid
+  airlineId     String      @map("airline_id") @db.Uuid
+  flightNumber  String      @map("flight_number")
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  deletedAt     DateTime?
+  airline       airlines    @relation(fields: [airlineId], references: [id])
+  flightSchedule flightSchedules[]
+}
+
+model flightSchedules {
+  id              String      @id @default(uuid()) @db.Uuid
+  flightId        String      @map("flight_id") @db.Uuid
+  type            FlightType
+  depatureAirportId String    @map("depature_airport_id") @db.Uuid
+  arrivalAirportId String     @map("arrival_airport_id") @db.Uuid
+  depatureDate    DateTime    @map("depature_date")
+  arrivalDate     DateTime    @map("arrival_date")
+  depatureTime    DateTime    @map("depature_time")
+  arrivalTime     DateTime    @map("arrival_time")
+  duration        String
+  unitPrice       Decimal     @default(0) @map("unit_price")
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  deletedAt       DateTime?
+  flight          flights     @relation(fields: [flightId], references: [id])
+  departureAirport airports   @relation("DepartureAirport", fields: [depatureAirportId], references: [id])
+  arrivalAirport   airports   @relation("ArrivalAirport", fields: [arrivalAirportId], references: [id])
+  bookingFlights   bookingFlights[]
+}
+
+model bookings {
+  id               String      @id @default(uuid()) @db.Uuid
+  referenceNumber  String      @unique @map("reference_number")
+  userId           String      @map("user_id") @db.Uuid
+  currency         String      @default("USD")
+  paymentType      String      @default("credit/debit") @map("payment_type")
+  status           BookingStatus
+  totalPassenger   Int         @map("total_pessenger")
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  deletedAt        DateTime?
+  user             users       @relation(fields: [userId], references: [id])
+  bookingPassengerDetails bookingPassengerDetail[]
+  bookingFlights   bookingFlights[]
+}
+
+model bookingFlights {
+  id               String      @id @default(uuid()) @db.Uuid
+  bookingId        String      @map("booking_id") @db.Uuid
+  date             DateTime
+  flightScheduleId String      @map("flight_schedule_id") @db.Uuid
+  booking          bookings    @relation(fields: [bookingId], references: [id])
+  flightSchedule   flightSchedules @relation(fields: [flightScheduleId], references: [id])
+  unitPrice       Decimal     @default(0) @map("unit_price")
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  deletedAt        DateTime?
+}
+
+model bookingPassengerDetail {
+  id               String      @id @default(uuid()) @db.Uuid
+  bookingId        String      @map("booking_id") @db.Uuid
+  title            Title
+  firstName        String      @map("first_name")
+  lastName         String      @map("last_name")
+  dateOfBirth      DateTime    @map("date_of_birth")
+  nationality      String
+  passportNumber   String?     @map("passport_number") // Nullable
+  passportExpireDate DateTime? @map("passport_expire_date") // Nullable
+  booking          bookings    @relation(fields: [bookingId], references: [id])
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  deletedAt        DateTime?
+}
