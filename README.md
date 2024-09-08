@@ -28,34 +28,21 @@
 
 ## Installation using docker
 
-````bash
+```bash
 $ docker network create thirtystf
 $ make start
 $ make build
 $ npm install
 
 
+```
+
 ## Migration
-Make sure you docker is successfully configure and started.
 
 ```bash
 $ npm run prisma:migrate
 $ npm run prisma:seed
 
-
-````
-
-## Running the app
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
 ```
 
 ```
@@ -68,7 +55,7 @@ API will be hosted at http://localhost:8007.
 
 If you want to test stripe webhook from localhost, you have to do  the  following steps,
 - install ngrok https://ngrok.com/docs/getting-started/
-- $ ngrok http 8007 [that will generate end point  for localhost]
+- $ ngrok http 8007 [that will generate end point  for localhost . eg https://4c8d-2001-fb1-fa-52b9-b186-fa59-bf40-9d22.ngrok-free.app ]
 - create endpoint at stripe's dashboard webhook using my api
   POST
   http://localhost:8007/api/webhook/create-endpoint
@@ -76,9 +63,10 @@ If you want to test stripe webhook from localhost, you have to do  the  followin
     "domain":"https://4c8d-2001-fb1-fa-52b9-b186-fa59-bf40-9d22.ngrok-free.app"
   }
 
-
+- Mock data support depature date - 27/09/2024 and return date - 03/10/2024
 
 
 ## License
 
 Nest is [MIT licensed](LICENSE).
+```
