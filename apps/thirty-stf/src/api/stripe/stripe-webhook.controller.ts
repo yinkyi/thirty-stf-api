@@ -1,30 +1,35 @@
-import { Controller, Post, Body, Inject } from '@nestjs/common';
-import { Stripe } from 'stripe';
+import { BookingRepository } from '@app/thirty-stf-repository/booking/booking.repository';
+import { BookingStatusEnum } from '@app/thirty-stf-repository/enum/entity.enum';
+import { Controller, Post, Res, Req, Body } from '@nestjs/common';
+import { CreateWebhookEndPointDto } from 'apps/thirty-stf/src/api/stripe/dto/createEndpoint.dto';
+import { StripeService } from 'apps/thirty-stf/src/api/stripe/stripe.service';
+import { Request } from 'express';
 
-@Controller('webhooks')
+@Controller('webhook')
 export class StripeWebhookController {
-  private stripe: Stripe;
+  constructor(
+    private stripeService: StripeService,
+    private readonly bookingRepository: BookingRepository,
+  ) {}
 
-  constructor(@Inject('STRIPE_API_KEY') private readonly apiKey: string) {
-    this.stripe = new Stripe(this.apiKey, {
-      apiVersion: '2024-06-20', // Use whatever API latest version
-    });
-  }
-
-  @Post('stripe')
-  async handleStripeWebhook(@Body() payload: any) {
-    const sig = payload.headers['stripe-signature'];
-
+  @Post('')
+  async handleWebhook(@Body() event) {
     try {
-      const event = this.stripe.webhooks.constructEvent(
-        payload.body,
-        sig,
-        process.env.STRIPE_WEBHOOK_SECRET,
-      );
+      const data = event.data.object;
       switch (event.type) {
         case 'payment_intent.succeeded':
           const paymentIntent = event.data.object;
-          console.log(paymentIntent);
+          break;
+        case 'charge.succeeded':
+          await this.bookingRepository.updateBookingStatus(
+            data.metadata['bookingRef'],
+            BookingStatusEnum.completed,
+          );
+          break;
+
+        /**Add  more webhook */
+        default:
+          console.log(`Unhandled event type ${event.type}`);
       }
 
       return { received: true };
@@ -32,5 +37,28 @@ export class StripeWebhookController {
       console.error(`Webhook Error: ${err.message}`);
       return { error: 'Webhook Error' };
     }
+  }
+
+  @Post('/create-endpoint')
+  async createWebhookEndpoint(@Body() dto: CreateWebhookEndPointDto) {
+    const webhook_url = `${dto.domain}/api/webhook`;
+    const enabled_events = [
+      'customer.subscription.trial_will_end',
+      'customer.subscription.created',
+      'customer.subscription.updated',
+      'invoice.created',
+      'invoice.updated',
+      'invoice.upcoming',
+      'invoice.paid',
+      'invoice.payment_failed',
+      'invoice.payment_succeeded',
+      'customer.updated',
+      'payment_intent.succeeded',
+      'charge.succeeded',
+    ];
+    return await this.stripeService.registerWebhookEndPoints(
+      webhook_url,
+      enabled_events,
+    );
   }
 }

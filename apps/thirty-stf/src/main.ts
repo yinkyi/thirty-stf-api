@@ -12,6 +12,7 @@ import {
 import { ThirtySTFlogService } from '@app/thirtystflog';
 import { ConfigService } from '@nestjs/config';
 import 'reflect-metadata';
+import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
   const configService = new ConfigService();
@@ -55,6 +56,8 @@ async function bootstrap() {
     });
     SwaggerModule.setup('api', app, document);
   }
+
+  // app.use('/api/webhook', bodyParser.raw({ type: 'application/json' }));
 
   await app.listen(configService.get('PORT'));
 }

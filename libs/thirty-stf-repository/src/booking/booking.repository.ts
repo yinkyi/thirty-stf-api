@@ -75,7 +75,7 @@ export class BookingRepository {
       },
     });
     const gateway = await this.notificationGateway[NotificationEnum.EMAIL];
-    await gateway.sendNotification(user, newBooking);
+    await gateway.bookingConfirmNotification(user, newBooking);
     return newBooking;
   }
 
@@ -91,5 +91,20 @@ export class BookingRepository {
     });
 
     return booking;
+  }
+
+  async updateBookingStatus(ref: string, status: BookingStatusEnum) {
+    const updateBooking = await this.prisma.bookings.update({
+      where: { referenceNumber: ref },
+      data: {
+        status: status,
+      },
+    });
+
+    const user = await this.prisma.users.findFirstOrThrow({
+      where: { id: updateBooking.userId },
+    });
+    const gateway = await this.notificationGateway[NotificationEnum.EMAIL];
+    await gateway.paymentConfirmNotification(user, updateBooking);
   }
 }

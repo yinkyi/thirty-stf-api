@@ -31,7 +31,7 @@ services:
     env_file: .env
     environment:
       - DATABASE_HOST=thirtystf-db
-      - ANALYTIC_DATABASE_URL=postgres://${DATABASE_USER}:${DATABASE_PASSWORD}@thirtystf-db:5432/${DATABASE_NAME}
+      - DATABASE_URL=postgres://${DATABASE_USER}:${DATABASE_PASSWORD}@thirtystf-db:5432/${DATABASE_NAME}
     ports:
       - '${PORT}:${PORT}'
     volumes:

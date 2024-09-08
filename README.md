@@ -26,13 +26,24 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-## Installation
+## Installation using docker
 
-```bash
+````bash
 $ docker network create thirtystf
 $ make start
+$ make build
 $ npm install
-```
+
+
+## Migration
+Make sure you docker is successfully configure and started.
+
+```bash
+$ npm run prisma:migrate
+$ npm run prisma:seed
+
+
+````
 
 ## Running the app
 
@@ -47,28 +58,26 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
 ```
 
 ## Support
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+You can get .env file from my email attachments.[attachments are .env, postman collection]
+Open and connect the postgres IDE(eg: dbraver ) use db connection using port number 54320 and host is localhost.
+API will be hosted at http://localhost:8007.
 
-## Stay in touch
+If you want to test stripe webhook from localhost, you have to do  the  following steps,
+- install ngrok https://ngrok.com/docs/getting-started/
+- $ ngrok http 8007 [that will generate end point  for localhost]
+- create endpoint at stripe's dashboard webhook using my api
+  POST
+  http://localhost:8007/api/webhook/create-endpoint
+  {
+    "domain":"https://4c8d-2001-fb1-fa-52b9-b186-fa59-bf40-9d22.ngrok-free.app"
+  }
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+
+
 
 ## License
 

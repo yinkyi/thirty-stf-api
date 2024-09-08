@@ -17,8 +17,4 @@ export class StripeController {
     return await this.stripeService.getProducts();
   }
 
-  @Post('create-payment-intent')
-  async createPaymentIntent() {
-    return await this.stripeService.createPaymentIntent(1000, 'USD');
-  }
 }

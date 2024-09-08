@@ -32,6 +32,7 @@ export class BookingService {
     const paymentIntent = await this.stripeService.createPaymentIntent(
       totalCost,
       'USD',
+      booking.referenceNumber,
     );
     return {
       ...booking,

@@ -5,7 +5,15 @@ import { bookings, users } from '@prisma/client';
 
 // Abstract class for notifications
 export abstract class NotificationGateway {
-  abstract sendNotification(user: users, token?: bookings): Promise<void>;
+  abstract bookingConfirmNotification(
+    user: users,
+    token?: bookings,
+  ): Promise<void>;
+
+  abstract paymentConfirmNotification(
+    user: users,
+    token?: bookings,
+  ): Promise<void>;
 }
 
 // Tax Amount = Unit Price × (Tax Rate / 100 + Tax Rate)
@@ -16,15 +24,35 @@ export class EmailNoti implements NotificationGateway {
   constructor(private readonly mailerService: MailService) {}
 
   // Sends email notification
-  async sendNotification(user: users, booking: bookings): Promise<void> {
-    await this.mailerService.sendUserConfirmation(user, booking);
+  async bookingConfirmNotification(
+    user: users,
+    booking: bookings,
+  ): Promise<void> {
+    await this.mailerService.sendBookingConfirmation(user, booking);
+  }
+
+  async paymentConfirmNotification(
+    user: users,
+    booking: bookings,
+  ): Promise<void> {
+    await this.mailerService.sendPaymentConfirmation(user, booking);
   }
 }
 
 @Injectable()
 export class SMSNoti implements NotificationGateway {
   // Sends SMS notification
-  async sendNotification(user: users, booking: bookings): Promise<void> {
+  async bookingConfirmNotification(
+    user: users,
+    booking: bookings,
+  ): Promise<void> {
+    // Logic for sending SMS goes here
+  }
+
+  async paymentConfirmNotification(
+    user: users,
+    booking: bookings,
+  ): Promise<void> {
     // Logic for sending SMS goes here
   }
 }

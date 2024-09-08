@@ -43,6 +43,14 @@ async function main() {
     },
   });
 
+  const airline3 = await prisma.airlines.create({
+    data: {
+      id: uuidv4(),
+      name: 'MAI',
+      phone: '098-765-4321',
+    },
+  });
+
   // Seed Airports
   const airport1 = await prisma.airports.create({
     data: {
@@ -59,6 +67,23 @@ async function main() {
       name: 'Don Mueang International Airport',
       code: 'DMI-BKK',
       city: 'Bangkok',
+    },
+  });
+  const airport3 = await prisma.airports.create({
+    data: {
+      id: uuidv4(),
+      name: 'Yangon  (YGN)',
+      code: 'YGN',
+      city: 'Myanmar',
+    },
+  });
+
+  const airport4 = await prisma.airports.create({
+    data: {
+      id: uuidv4(),
+      name: 'Singapore Changi Airport',
+      code: 'SIN',
+      city: 'Singaporee',
     },
   });
 
@@ -85,6 +110,26 @@ async function main() {
         airportId: airport2.id,
         type: 'international',
       },
+      {
+        id: uuidv4(),
+        airportId: airport3.id,
+        type: 'domestic',
+      },
+      {
+        id: uuidv4(),
+        airportId: airport3.id,
+        type: 'international',
+      },
+      {
+        id: uuidv4(),
+        airportId: airport4.id,
+        type: 'domestic',
+      },
+      {
+        id: uuidv4(),
+        airportId: airport4.id,
+        type: 'international',
+      },
     ],
   });
 
@@ -105,13 +150,21 @@ async function main() {
     },
   });
 
+  const flight3 = await prisma.flights.create({
+    data: {
+      id: uuidv4(),
+      airlineId: airline3.id,
+      flightNumber: 'MNA001',
+    },
+  });
+
   // Seed Flight Schedules
-  const departureTime1 = new Date('2024-12-01T10:00:00Z');
-  const arrivalTime1 = new Date('2024-12-01T12:00:00Z');
+  const departureTime1 = new Date('2024-09-27T10:00:00Z');
+  const arrivalTime1 = new Date('2024-09-27T12:00:00Z');
   const duration1 = calculateDuration(departureTime1, arrivalTime1);
 
-  const departureTime2 = new Date('2024-12-02T15:00:00Z');
-  const arrivalTime2 = new Date('2024-12-02T18:00:00Z');
+  const departureTime2 = new Date('2024-10-03T15:00:00Z');
+  const arrivalTime2 = new Date('2024-10-03T18:00:00Z');
   const duration2 = calculateDuration(departureTime2, arrivalTime2);
 
   await prisma.flightSchedules.createMany({
@@ -132,7 +185,7 @@ async function main() {
       {
         id: uuidv4(),
         flightId: flight2.id, // Use flight_id reference
-        type: 'international',
+        type: 'domestic',
         depatureAirportId: airport2.id,
         arrivalAirportId: airport1.id,
         depatureDate: departureTime2,
@@ -140,7 +193,59 @@ async function main() {
         depatureTime: departureTime2,
         arrivalTime: arrivalTime2,
         duration: duration2,
-        unitPrice: 200,
+        unitPrice: 1000,
+      },
+      {
+        id: uuidv4(),
+        flightId: flight3.id, // Use flight_id reference
+        type: 'international',
+        depatureAirportId: airport3.id,
+        arrivalAirportId: airport1.id,
+        depatureDate: departureTime1,
+        arrivalDate: arrivalTime1,
+        depatureTime: departureTime1,
+        arrivalTime: arrivalTime1,
+        duration: duration2,
+        unitPrice: 1000,
+      },
+      {
+        id: uuidv4(),
+        flightId: flight3.id, // Use flight_id reference
+        type: 'international',
+        depatureAirportId: airport1.id,
+        arrivalAirportId: airport3.id,
+        depatureDate: departureTime1,
+        arrivalDate: arrivalTime1,
+        depatureTime: departureTime1,
+        arrivalTime: arrivalTime1,
+        duration: duration2,
+        unitPrice: 3000,
+      },
+      {
+        id: uuidv4(),
+        flightId: flight2.id, // Use flight_id reference
+        type: 'international',
+        depatureAirportId: airport2.id,
+        arrivalAirportId: airport4.id,
+        depatureDate: departureTime2,
+        arrivalDate: arrivalTime2,
+        depatureTime: departureTime2,
+        arrivalTime: arrivalTime2,
+        duration: duration2,
+        unitPrice: 3000,
+      },
+      {
+        id: uuidv4(),
+        flightId: flight2.id, // Use flight_id reference
+        type: 'international',
+        depatureAirportId: airport4.id,
+        arrivalAirportId: airport2.id,
+        depatureDate: departureTime2,
+        arrivalDate: arrivalTime2,
+        depatureTime: departureTime2,
+        arrivalTime: arrivalTime2,
+        duration: duration2,
+        unitPrice: 3000,
       },
     ],
   });

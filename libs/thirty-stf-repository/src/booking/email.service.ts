@@ -7,7 +7,7 @@ import { bookings, users } from '@prisma/client';
 export class MailService {
   constructor(private readonly mailerService: MailerService) {}
 
-  async sendUserConfirmation(user: users, booking: bookings) {
+  async sendBookingConfirmation(user: users, booking: bookings) {
     const link = `http://localhost:3000/checkout/${booking.referenceNumber}`;
 
     await this.mailerService.sendMail({
@@ -19,6 +19,19 @@ export class MailService {
         lastName: user.lastName,
         referenceNumber: booking.referenceNumber,
         paymentLink: link,
+      },
+    });
+  }
+
+  async sendPaymentConfirmation(user: users, booking: bookings) {
+    await this.mailerService.sendMail({
+      to: user.email, // Recipient email address
+      subject: `Welcome to our 30 SecondsToFly! Confirm your Booking Number is ${booking.referenceNumber}`,
+      template: 'payment-success',
+      context: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        referenceNumber: booking.referenceNumber,
       },
     });
   }
