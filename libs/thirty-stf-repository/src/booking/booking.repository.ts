@@ -35,6 +35,7 @@ export class BookingRepository {
   }
 
   async saveBooking(createBookingInput: CreateBookingInput): Promise<bookings> {
+    console.log(createBookingInput.userId);
     /** update user info */
     const user = await this.prisma.users.update({
       where: { id: createBookingInput.userId },
