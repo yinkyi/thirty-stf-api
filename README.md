@@ -26,7 +26,7 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-## Installation using docker
+## Installation using docker (create Database)
 
 ```bash
 $ docker network create thirtystf
@@ -34,7 +34,6 @@ $ npm run prisma:generate
 $ make start
 $ make build
 $ npm install
-
 
 ```
 
@@ -44,7 +43,6 @@ $ npm install
 $ npm run prisma:migrate
 $ npm run prisma:seed
 
-```
 
 ```
 
@@ -54,20 +52,23 @@ You can get .env file from my email attachments.[attachments are .env, postman c
 Open and connect the postgres IDE(eg: dbraver ) use db connection using port number 54320 and host is localhost.
 API will be hosted at http://localhost:8007.
 
-If you want to test stripe webhook from localhost, you have to do  the  following steps,
+If you want to test stripe webhook from localhost, you have to do the following steps,
+
 - install ngrok https://ngrok.com/docs/getting-started/
-- $ ngrok http 8007 [that will generate end point  for localhost . eg https://4c8d-2001-fb1-fa-52b9-b186-fa59-bf40-9d22.ngrok-free.app ]
+- $ ngrok http 8007 [that will generate end point for localhost . eg https://4c8d-2001-fb1-fa-52b9-b186-fa59-bf40-9d22.ngrok-free.app ]
 - create endpoint at stripe's dashboard webhook using my api
   POST
   http://localhost:8007/api/webhook/create-endpoint
   {
-    "domain":"https://4c8d-2001-fb1-fa-52b9-b186-fa59-bf40-9d22.ngrok-free.app"
+  "domain":"https://4c8d-2001-fb1-fa-52b9-b186-fa59-bf40-9d22.ngrok-free.app"
   }
 
 - Mock data support depature date - 27/09/2024 and return date - 03/10/2024
 
-
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
+```
+
 ```
