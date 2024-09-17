@@ -26,24 +26,25 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-## Installation using docker
+## Installation using docker (create Database)
 
 ```bash
 $ docker network create thirtystf
-$ make start
+$ make start SERVICE=thirtystf-db
+$ npm run prisma:migrate
+$ npm run prisma:seed
+
+
+```
+
+## Installation using docker (create Database)
+
+```bash
+$ make start SERVICE=thirtystf
 $ make build
 $ npm install
 
 
-```
-
-## Migration
-
-```bash
-$ npm run prisma:migrate
-$ npm run prisma:seed
-
-```
 
 ```
 
