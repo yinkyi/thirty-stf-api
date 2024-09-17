@@ -30,6 +30,7 @@
 
 ```bash
 $ docker network create thirtystf
+$ npm run prisma:generate
 $ make start
 $ make build
 $ npm install
