@@ -29,11 +29,12 @@
 ## Installation using docker (create Database)
 
 ```bash
-$ docker network create thirtystf
+$ npm install
 $ npm run prisma:generate
+$ docker network create thirtystf
 $ make start
 $ make build
-$ npm install
+
 
 ```
 
