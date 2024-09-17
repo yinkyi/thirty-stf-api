@@ -37,7 +37,7 @@ $ npm run prisma:seed
 
 ```
 
-## Installation using docker (create Database)
+## Installation using docker (create App)
 
 ```bash
 $ make start SERVICE=thirtystf
